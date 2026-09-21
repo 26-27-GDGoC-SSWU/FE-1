@@ -37,6 +37,7 @@ export const memories = [
     title: '친구랑 먹은 케이크',
     place: 'XX카페',
     date: '2026년 X월 X일',
+    diary: '일기1',
   },
   {
     id: 2,
@@ -44,6 +45,7 @@ export const memories = [
     title: '비오는 날엔 파전',
     place: 'XX파전',
     date: '2025년 X월 X일',
+    diary: '일기2',
   },
   {
     id: 3,
@@ -51,6 +53,7 @@ export const memories = [
     title: '뮤지컬 본 날',
     place: 'XX 팬케이크',
     date: '2026년 X월 X일',
+    diary: '일기3',
   },
   {
     id: 4,
@@ -58,6 +61,7 @@ export const memories = [
     title: '나 혼자 과제',
     place: '스타벅스',
     date: '2025년 X월 X일',
+    diary: '일기4',
   },
   {
     id: 5,
@@ -65,5 +69,6 @@ export const memories = [
     title: '쉬는 날 휴식',
     place: 'XX플라워 카페',
     date: '2026년 X월 X일',
+    diary: '일기5',
   },
 ];
