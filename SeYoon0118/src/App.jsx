@@ -20,6 +20,13 @@ export default function App() {
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  function handleChange(e) {
+    setNewMemory({
+      ...newMemory,
+      [e.target.name]: e.target.value,
+    });
+  }
+
   return (
     <main>
       <h1>나만의 추억 노선도</h1>
@@ -69,17 +76,44 @@ export default function App() {
           <div>
             <h3>새로운 추억 기록하기</h3>
 
-            <input type="text" placeholder="제목" />
+            <input
+              type="text"
+              name="title"
+              value={newMemory.title}
+              onChange={handleChange}
+              placeholder="제목"
+            />
 
-            <input type="text" placeholder="장소" />
+            <input
+              type="text"
+              name="place"
+              value={newMemory.place}
+              onChange={handleChange}
+              placeholder="장소"
+            />
 
-            <input type="text" placeholder="날짜" />
-            <input type="text" placeholder="일기" />
+            <input
+              type="text"
+              name="date"
+              value={newMemory.date}
+              onChange={handleChange}
+              placeholder="날짜"
+            />
 
-            <textarea placeholder="오늘의 추억을 기록해보세요" />
-
+            <textarea
+              name="diary"
+              value={newMemory.diary}
+              onChange={handleChange}
+              placeholder="오늘의 추억을 기록해보세요"
+            />
             <button>저장</button>
             <button onClick={() => setIsFormOpen(false)}>취소</button>
+            <div>
+              <p>제목: {newMemory.title}</p>
+              <p>장소: {newMemory.place}</p>
+              <p>날짜: {newMemory.date}</p>
+              <p>일기: {newMemory.diary}</p>
+            </div>
           </div>
         )}
       </div>
