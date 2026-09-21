@@ -26,6 +26,21 @@ export default function App() {
       [e.target.name]: e.target.value,
     });
   }
+  function handleSave() {
+    const createdMemory = {
+      id: Date.now(),
+      stationId: selectedStationId,
+      ...newMemory,
+    };
+    setMemories([...memories, createdMemory]);
+    setNewMemory({
+      title: '',
+      place: '',
+      date: '',
+      diary: '',
+    });
+    setIsFormOpen(false);
+  }
 
   return (
     <main>
@@ -106,14 +121,8 @@ export default function App() {
               onChange={handleChange}
               placeholder="오늘의 추억을 기록해보세요"
             />
-            <button>저장</button>
+            <button onClick={handleSave}>저장</button>
             <button onClick={() => setIsFormOpen(false)}>취소</button>
-            <div>
-              <p>제목: {newMemory.title}</p>
-              <p>장소: {newMemory.place}</p>
-              <p>날짜: {newMemory.date}</p>
-              <p>일기: {newMemory.diary}</p>
-            </div>
           </div>
         )}
       </div>
