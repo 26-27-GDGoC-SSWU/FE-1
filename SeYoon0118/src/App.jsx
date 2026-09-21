@@ -33,6 +33,7 @@ export default function App() {
       ...newMemory,
     };
     setMemories([...memories, createdMemory]);
+
     setNewMemory({
       title: '',
       place: '',
@@ -40,6 +41,9 @@ export default function App() {
       diary: '',
     });
     setIsFormOpen(false);
+  }
+  function handleDelete(id) {
+    setMemories(memories.filter((memory) => memory.id !== id));
   }
 
   return (
@@ -74,10 +78,12 @@ export default function App() {
             selectedMemories.map((memory) => (
               <MemoryCard
                 key={memory.id}
+                id={memory.id}
                 title={memory.title}
                 place={memory.place}
                 date={memory.date}
                 diary={memory.diary}
+                onDelete={handleDelete}
               />
             ))
           ) : (
