@@ -1,38 +1,47 @@
 import MemoryCard from './MemoryCard.jsx';
 import Station from './Station.jsx';
-import { stations, memories } from './data.js';
+import { stations, memories as initialMemories } from './data.js'; //initialMemories:앱이 처음 시작할 때 사용할 추억 데이터
 import { useState } from 'react';
 
 export default function App() {
   const [selectedStationId, setSelectedStationId] = useState(stations[0].id); //[현재 선택된 역 ID,그 값을 바꾸는 함수]
+  const [memories, setMemories] = useState(initialMemories);
   const selectedMemories = memories.filter(
     (memory) => memory.stationId === selectedStationId,
   );
   const selectedStation = stations.find(
     (station) => station.id === selectedStationId,
   );
+  const [newMemory, setNewMemory] = useState({
+    title: '',
+    place: '',
+    date: '',
+    diary: '',
+  });
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
     <main>
       <h1>나만의 추억 노선도</h1>
       <h2>학교 가는 길</h2>
       <p>선택된 역 ID: {selectedStationId}</p>
-      <div className="route-lauout">
+      <div className="route-layout">
         {/*전체 노선*/}
         <div className="route-list">
-          {stations.map(
-            //1.stations 배열을 하나씩 꺼낸다.
-            (
-              station, //2.꺼낸역 하나를 'station'이라 부르고
-            ) => (
-              <Station //3.그 데이터로 Station 컴포넌트를 하나 만든다
+          {stations.map((station) => {
+            const memoryCount = memories.filter(
+              (memory) => memory.stationId === station.id,
+            ).length;
+
+            return (
+              <Station
                 key={station.id}
-                name={station.name} //5.{name}으로 JSX에 표시한다.
-                memoryCount={station.memoryCount}
+                name={station.name}
+                memoryCount={memoryCount}
                 onSelect={() => setSelectedStationId(station.id)}
-                //Station이 선택되면 setselectedStationId()실행하고, 현재 station의 id를 새로운 값으로 자장하라
               />
-            ),
-          )}
+            );
+          })}
         </div>
 
         {/*선택된 역의 추억 */}
@@ -53,6 +62,26 @@ export default function App() {
             <p>아직 기록이 없어요</p>
           )}
         </div>
+        <button onClick={() => setIsFormOpen(true)}>
+          +{selectedStation.name}에 기록 추가하기
+        </button>
+        {isFormOpen && (
+          <div>
+            <h3>새로운 추억 기록하기</h3>
+
+            <input type="text" placeholder="제목" />
+
+            <input type="text" placeholder="장소" />
+
+            <input type="text" placeholder="날짜" />
+            <input type="text" placeholder="일기" />
+
+            <textarea placeholder="오늘의 추억을 기록해보세요" />
+
+            <button>저장</button>
+            <button onClick={() => setIsFormOpen(false)}>취소</button>
+          </div>
+        )}
       </div>
     </main>
   );

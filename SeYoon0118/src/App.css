@@ -182,3 +182,15 @@
     border-right-color: var(--border);
   }
 }
+.route-layout {
+  display: flex;
+  gap: 40px;
+}
+
+.route-list {
+  flex: 1;
+}
+
+.memory-panel {
+  flex: 2;
+}
