@@ -62,9 +62,9 @@ export default function HomePage() {
             return (
               <Station
                 key={station.id}
+                id={station.id}
                 name={station.name}
                 memoryCount={memoryCount}
-                onSelect={() => setSelectedStationId(station.id)}
               />
             );
           })}
