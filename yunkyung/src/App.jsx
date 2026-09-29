@@ -1,7 +1,10 @@
 import { useState } from "react";
-import TodoForm from "./components/TodoForm";
-import TodoList from "./components/TodoList";
-import TodoDetail from "./components/TodoDetail";
+import { Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import TodoPage from "./pages/TodoPage";
+import TodoDetailPage from "./pages/TodoDetailPage";
+import RecommendPage from "./pages/RecommendPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import "./App.css";
 
 // 오늘 날짜를 "YYYY-MM-DD" 형식으로 만들어주는 함수 (date input의 value 형식)
@@ -13,12 +16,11 @@ function getToday() {
 }
 
 function App() {
+  // 여러 페이지에서 같이 쓰는 상태는 공통 부모인 App에 둔다
   // 선택한 날짜 (처음엔 오늘 날짜)
   const [date, setDate] = useState(getToday());
   // 전체 할 일 목록 - 각 할 일은 어떤 날짜의 것인지 date를 함께 저장한다
   const [todos, setTodos] = useState([]);
-  // 클릭해서 들어간 할 일의 id (null이면 목록 화면)
-  const [selectedId, setSelectedId] = useState(null);
 
   // 새 할 일 추가: 기존 배열 뒤에 붙여서 입력한 순서가 유지되도록 한다
   const addTodo = (text) => {
@@ -47,52 +49,40 @@ function App() {
     );
   };
 
-  // 클릭한 할 일 찾기
-  const selectedTodo = todos.find((todo) => todo.id === selectedId);
-
-  // 할 일을 클릭했으면 상세 화면을 보여준다
-  if (selectedTodo) {
-    return (
-      <div className="app">
-        <TodoDetail
-          todo={selectedTodo}
-          onChangeDetail={updateDetail}
-          onBack={() => setSelectedId(null)}
-        />
-      </div>
-    );
-  }
-
-  // 선택한 날짜의 할 일만 골라낸다
-  const todosOfDate = todos.filter((todo) => todo.date === date);
-
   return (
     <div className="app">
-      <h1>투두리스트</h1>
-      <p className="subtitle">날짜를 고르고 할 일을 순서대로 적어보세요</p>
+      {/* 모든 페이지 위에 공통으로 보이는 메뉴 */}
+      <Header />
 
-      <label className="date-picker">
-        날짜
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+      {/* 주소(path)에 따라 다른 페이지 컴포넌트를 보여준다 */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <TodoPage
+              date={date}
+              onChangeDate={setDate}
+              todos={todos}
+              onAdd={addTodo}
+              onToggle={toggleTodo}
+              onDelete={deleteTodo}
+            />
+          }
         />
-      </label>
-
-      <div className="todo-card">
-        <TodoForm onAdd={addTodo} />
-        {todosOfDate.length === 0 ? (
-          <p className="empty">이 날짜에 등록된 할 일이 없어요</p>
-        ) : (
-          <TodoList
-            todos={todosOfDate}
-            onToggle={toggleTodo}
-            onDelete={deleteTodo}
-            onSelect={setSelectedId}
-          />
-        )}
-      </div>
+        {/* :id 자리에 오는 값은 useParams()로 꺼낼 수 있다 */}
+        <Route
+          path="/todo/:id"
+          element={
+            <TodoDetailPage todos={todos} onChangeDetail={updateDetail} />
+          }
+        />
+        <Route
+          path="/recommend"
+          element={<RecommendPage date={date} onAdd={addTodo} />}
+        />
+        {/* 위에 없는 주소는 모두 여기로 */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </div>
   );
 }
