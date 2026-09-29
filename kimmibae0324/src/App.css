@@ -237,3 +237,268 @@
   cursor: pointer;
   color: #d89a22;
 }
+
+.movie-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.movie-slate {
+  width: 220px;
+  background: #202020;
+  color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.movie-slate:hover {
+  transform: translateY(-5px);
+}
+
+.slate-top {
+  height: 35px;
+  background: repeating-linear-gradient(
+    135deg,
+    #ffffff 0px,
+    #ffffff 25px,
+    #111111 25px,
+    #111111 50px
+  );
+}
+
+.slate-body {
+  min-height: 120px;
+  padding: 20px;
+}
+
+.slate-body span {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.slate-body h2 {
+  margin-top: 12px;
+  font-size: 20px;
+  color: white;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.detail-page {
+  text-align: center;
+}
+
+.detail-page h1 {
+  font-size: 20px;
+  margin-bottom: 25px;
+}
+
+.detail-content h2 {
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.detail-rating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0 30px;
+}
+
+.rating-display {
+  display: flex;
+  gap: 4px;
+  font-size: 36px;
+}
+
+.recommend-badge {
+  background: #222;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 16px;
+}
+
+.detail-review {
+  font-size: 22px;
+}
+
+.recommend-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #222;
+  color: white;
+  font-size: 13px;}
+
+  .book-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.book-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.book-cover {
+  width: 160px;
+  height: 230px;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  color: white;
+
+  border-radius: 4px 10px 10px 4px;
+
+  box-shadow:
+    -6px 0 0 rgba(0, 0, 0, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.15);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.book-cover:hover {
+  transform: translateY(-6px);
+}
+
+.book-label {
+  font-size: 11px;
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+.book-cover h2 {
+  color: white;
+  font-size: 20px;
+  margin: 0;}
+
+  .home-page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 80px 30px;
+  text-align: center;
+}
+
+.home-label {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.home-page h1 {
+  font-size: 58px;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.home-description {
+  font-size: 20px;
+  color: #777;
+  margin-top: 15px;
+  margin-bottom: 55px;
+}
+
+.archive-menu {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.archive-card {
+  width: 260px;
+  height: 180px;
+  padding: 25px;
+
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  text-decoration: none;
+  color: #222;
+
+  text-align: left;
+
+  display: flex;
+  flex-direction: column;
+
+  transition: 0.2s;
+}
+
+.archive-card:hover {
+  transform: translateY(-6px);
+  background: #222;
+  color: white;
+}
+
+.archive-card span {
+  font-size: 12px;
+  color: #999;
+}
+
+.archive-card h2 {
+  font-size: 28px;
+  margin: 20px 0 5px;
+}
+
+.archive-card p {
+  font-size: 13px;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.archive-card strong {
+  margin-top: auto;
+  font-size: 22px;
+}
+
+.back-link {
+  display: inline-block;
+  padding: 8px 14px;
+
+  border: 1px solid #ddd;
+  border-radius: 20px;
+
+  text-decoration: none;
+  color: #555;
+
+  font-size: 14px;
+
+  transition: 0.2s;
+}
+
+.back-link:hover {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+.book-color-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.book-color-select input {
+  width: 50px;
+  height: 35px;
+  border: none;
+  cursor: pointer;
+}
