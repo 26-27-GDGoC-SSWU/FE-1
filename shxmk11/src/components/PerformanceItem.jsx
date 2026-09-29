@@ -1,6 +1,8 @@
-function PerformanceItem({ title, type, date, place }) {
+import { Link } from "react-router";
+
+function PerformanceItem({ id, title, type, date, place }) {
   return (
-    <div className="performance-item">
+    <Link to={`/performance/${id}`} className="performance-item">
       <div className="poster"></div>
 
       <div className="performance-info">
@@ -9,7 +11,7 @@ function PerformanceItem({ title, type, date, place }) {
         <p>{date}</p>
         <p>{place}</p>
       </div>
-    </div>
+    </Link>
   );
 }
 
