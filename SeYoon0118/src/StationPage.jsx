@@ -21,6 +21,8 @@ export default function StationPage({ memories, setMemories }) {
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   function handleDelete(id) {
     setMemories(memories.filter((memory) => memory.id !== id));
   }
@@ -49,26 +51,40 @@ export default function StationPage({ memories, setMemories }) {
 
     setIsFormOpen(false);
   }
+  const currentMemory = selectedMemories[currentIndex];
 
   return (
     <div>
       <h1>{selectedStation.name}에서의 추억</h1>
 
-      {selectedMemories.length > 0 ? (
-        selectedMemories.map((memory) => (
-          <MemoryCard
-            key={memory.id}
-            id={memory.id}
-            title={memory.title}
-            place={memory.place}
-            date={memory.date}
-            diary={memory.diary}
-            onDelete={handleDelete}
-          />
-        ))
+      {currentMemory ? (
+        <MemoryCard
+          //key={memory.id}
+          id={currentMemory.id}
+          title={currentMemory.title}
+          place={currentMemory.place}
+          date={currentMemory.date}
+          diary={currentMemory.diary}
+          onDelete={handleDelete}
+        />
       ) : (
         <p>아직 기록이 없어요</p>
       )}
+      <button
+        onClick={() => setCurrentIndex(currentIndex - 1)}
+        disabled={currentIndex === 0}
+      >
+        ← 이전
+      </button>
+      <p>
+        {currentIndex + 1} / {selectedMemories.length}
+      </p>
+      <button
+        onClick={() => setCurrentIndex(currentIndex + 1)}
+        disabled={currentIndex === selectedMemories.length - 1}
+      >
+        다음 →
+      </button>
       <button onClick={() => setIsFormOpen(true)}>
         +{selectedStation.name}에 기록 추가하기
       </button>
