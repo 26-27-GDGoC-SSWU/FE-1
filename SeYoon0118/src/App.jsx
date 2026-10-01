@@ -8,7 +8,10 @@ export default function App() {
   const [memories, setMemories] = useState(initialMemories);
   return (
     <Routes>
-      <Route path="/" element={<HomePage memories={memories} />} />
+      <Route
+        path="/"
+        element={<HomePage memories={memories} setMemories={setMemories} />}
+      />
       <Route
         path="/station/:stationId"
         element={<StationPage memories={memories} setMemories={setMemories} />}
