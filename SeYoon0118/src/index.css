@@ -1,111 +1,877 @@
+/* =========================
+   기본 색상
+========================= */
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --bg: #fffcfa;
+  --surface: #ffffff;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text: #2e2624;
+  --text-soft: #9a8c87;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  --coral: #ef8b78;
+  --coral-dark: #d9644f;
+  --coral-light: #fff0ec;
+
+  --border: #f3eae6;
+
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--bg);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* =========================
+   전체 기본 설정
+========================= */
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  width: 100%;
 }
+
+/* =========================
+   기본 글자
+========================= */
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
+h2,
+h3,
+h4,
+h5,
+h6,
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+h1,
+h2,
+h3 {
+  color: var(--text);
 }
 
-code {
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* =========================
+   링크
+========================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================
+   버튼 기본 스타일
+========================= */
+
+button {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  padding: 10px 16px;
+
+  background-color: var(--surface);
+  color: var(--text);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--coral);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* =========================
+   입력창 기본 스타일
+========================= */
+
+input,
+textarea {
+  width: 100%;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  padding: 14px 16px;
+
+  background-color: #fffbf9;
+  color: var(--text);
+
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #c7bbb6;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--coral);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* =========================
+   모바일 기본 대응
+========================= */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+}
+/* =========================
+   Home Page
+========================= */
+
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 36px;
+
+  background-color: var(--bg);
+}
+
+.home-header {
+  max-width: 1440px;
+  margin: 0 auto 28px;
+}
+
+.home-eyebrow {
+  margin-bottom: 8px;
+
+  color: var(--coral-dark);
   font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  font-weight: 700;
+}
+
+.home-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* =========================
+   Home Layout
+========================= */
+
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 540px);
+
+  max-width: 1440px;
+  margin: 0 auto;
+
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* =========================
+   Route Panel
+========================= */
+
+.route-panel {
+  overflow: hidden;
+
+  min-height: 620px;
+
+  background-color: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+
+.route-panel-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  padding: 28px 32px 22px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  margin-bottom: 6px;
+
+  color: var(--coral-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.route-panel-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.route-summary {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+/* =========================
+   Station List
+========================= */
+
+.route-list {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px 20px 32px;
+}
+
+/* 세로 노선 선 */
+
+.route-list::before {
+  content: '';
+
+  position: absolute;
+
+  top: 44px;
+  bottom: 54px;
+  left: 48px;
+
+  width: 4px;
+
+  border-radius: 999px;
+
+  background-color: #f5aa9c;
+}
+
+/* =========================
+   Station
+========================= */
+
+.station-item {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+
+  width: 100%;
+  min-height: 64px;
+
+  padding: 10px 18px 10px 6px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: transparent;
+
+  text-align: left;
+}
+
+.station-item:hover:not(:disabled) {
+  border-color: transparent;
+  background-color: #fff8f5;
+}
+
+/* 역 동그라미 */
+
+.station-dot {
+  justify-self: center;
+
+  width: 18px;
+  height: 18px;
+
+  background-color: var(--surface);
+
+  border: 4px solid var(--coral);
+  border-radius: 50%;
+}
+
+/* 역 이름 */
+
+.station-name {
+  margin-left: 10px;
+
+  color: var(--text);
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* 추억 개수 */
+
+.station-count {
+  color: var(--text-soft);
+
+  font-size: 14px;
+}
+
+/* 기록 있는 역 */
+
+.station-item:not(.selected) .station-count {
+  color: var(--text-soft);
+}
+
+/* 선택된 역 */
+
+.station-item.selected {
+  background-color: var(--coral-light);
+}
+
+.station-item.selected .station-dot {
+  width: 26px;
+  height: 26px;
+
+  background-color: var(--coral);
+
+  border: 5px solid #ffd8cf;
+
+  box-shadow: 0 0 0 5px #fff3ef;
+}
+
+.station-item.selected .station-name {
+  font-weight: 800;
+}
+
+.station-item.selected .station-count {
+  padding: 6px 12px;
+
+  background-color: #ffe8e2;
+
+  border-radius: 999px;
+
+  color: var(--coral-dark);
+  font-weight: 700;
+}
+/* =========================
+   Memory Panel
+========================= */
+
+.memory-panel {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 620px;
+
+  padding: 28px;
+
+  background-color: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+
+.memory-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.memory-panel-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.full-view-link {
+  padding: 10px 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--surface);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.full-view-link:hover {
+  border-color: var(--coral);
+}
+
+/* =========================
+   Memory Card
+========================= */
+
+.home-memory-card {
+  min-height: 340px;
+
+  padding: 28px;
+
+  border: 1px solid var(--border);
+  border-radius: 22px;
+
+  background-color: #fffefd;
+
+  box-shadow: 0 12px 30px rgba(80, 50, 40, 0.05);
+}
+
+.memory-date {
+  margin-bottom: 18px;
+
+  color: var(--coral-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.home-memory-card h3 {
+  margin-bottom: 10px;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.memory-place {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.memory-place::first-letter {
+  color: var(--coral);
+}
+
+.memory-divider {
+  height: 1px;
+
+  margin: 20px 0;
+
+  background-color: var(--border);
+}
+
+.memory-diary {
+  min-height: 150px;
+
+  color: #655956;
+  font-family: 'Gowun Batang', 'Noto Serif KR', serif;
+
+  font-size: 16px;
+  line-height: 2;
+
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 31px,
+    #f3e4df 32px
+  );
+}
+
+/* =========================
+   Memory Navigation
+========================= */
+
+.memory-navigation {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  gap: 18px;
+
+  margin-top: 20px;
+}
+
+.memory-navigation button:first-child {
+  justify-self: start;
+}
+
+.memory-navigation button:last-child {
+  justify-self: end;
+}
+
+.memory-navigation p {
+  color: var(--text-soft);
+}
+
+/* =========================
+   Add Memory
+========================= */
+
+.add-memory-button {
+  width: 100%;
+
+  margin-top: auto;
+
+  padding: 16px;
+
+  background-color: var(--coral);
+  border-color: var(--coral);
+
+  color: white;
+  font-weight: 700;
+}
+
+.add-memory-button:hover:not(:disabled) {
+  background-color: var(--coral-dark);
+  border-color: var(--coral-dark);
+}
+
+/* 기록 없는 역 */
+
+.empty-memory {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 340px;
+
+  border: 1px dashed #f0c9c0;
+  border-radius: 22px;
+
+  color: var(--text-soft);
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1000px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .memory-panel {
+    min-height: 520px;
+  }
+}
+/* =========================
+   Station Page
+========================= */
+
+.station-page {
+  width: min(900px, calc(100% - 40px));
+  min-height: 100vh;
+
+  margin: 0 auto;
+  padding: 52px 0 70px;
+}
+
+.station-page-header {
+  margin-bottom: 30px;
+}
+
+.back-to-route {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 26px;
+  padding: 10px 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--surface);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.back-to-route:hover {
+  border-color: var(--coral);
+}
+
+.station-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.station-title-row h1 {
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.station-title-row > p {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+/* =========================
+   Station Memory Area
+========================= */
+
+.station-memory-area {
+  position: relative;
+}
+
+.memory-card {
+  min-height: 500px;
+
+  padding: 42px;
+
+  background-color: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 28px;
+
+  box-shadow: 0 22px 50px rgba(90, 50, 35, 0.08);
+}
+
+.memory-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+}
+
+.memory-card-date {
+  color: var(--coral-dark);
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.memory-delete-button {
+  padding: 8px 14px;
+
+  color: var(--text-soft);
+
+  border-radius: 999px;
+}
+
+.memory-card-title {
+  margin-bottom: 12px;
+
+  font-size: 31px;
+  font-weight: 800;
+}
+
+.memory-card-place {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.place-dot {
+  width: 8px;
+  height: 8px;
+
+  background-color: var(--coral);
+
+  border-radius: 50%;
+}
+
+.memory-card-divider {
+  height: 1px;
+
+  margin: 24px 0;
+
+  background-color: var(--border);
+}
+
+.memory-card-diary {
+  min-height: 260px;
+
+  color: #655956;
+
+  font-family: 'Gowun Batang', 'Noto Serif KR', serif;
+
+  font-size: 17px;
+  line-height: 2.3;
+
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 37px,
+    #f3e4df 38px
+  );
+}
+
+/* =========================
+   Station Navigation
+========================= */
+
+.station-memory-navigation {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  max-width: 500px;
+
+  margin: 26px auto 0;
+
+  gap: 22px;
+}
+
+.station-memory-navigation button:first-child {
+  justify-self: end;
+}
+
+.station-memory-navigation button:last-child {
+  justify-self: start;
+}
+
+.station-memory-navigation p {
+  color: var(--text-soft);
+  font-size: 16px;
+}
+
+.station-memory-navigation strong {
+  color: var(--text);
+}
+
+/* =========================
+   Station Add Button
+========================= */
+
+.station-add-button {
+  width: 100%;
+
+  margin-top: 26px;
+  padding: 17px;
+
+  background-color: transparent;
+
+  border: 1px dashed #efb4a8;
+
+  color: var(--coral-dark);
+
+  font-weight: 700;
+}
+
+.station-add-button:hover:not(:disabled) {
+  background-color: var(--coral-light);
+}
+/* =========================
+   Memory Form
+========================= */
+
+.memory-form {
+  margin-top: 24px;
+  padding: 32px;
+
+  background-color: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  box-shadow: 0 18px 40px rgba(90, 50, 35, 0.06);
+}
+
+.memory-form h3 {
+  margin-bottom: 22px;
+
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.memory-form input,
+.memory-form textarea {
+  margin-bottom: 14px;
+
+  background-color: #fffcfa;
+}
+
+.memory-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+}
+
+.memory-form textarea {
+  min-height: 220px;
+
+  line-height: 1.7;
+}
+
+.memory-form-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 4px;
+}
+
+.cancel-button {
+  padding: 12px 20px;
+
+  background-color: #f8f1ee;
+
+  border-color: transparent;
+
+  color: #746763;
+
+  font-weight: 700;
+}
+
+.save-button {
+  padding: 12px 22px;
+
+  background-color: var(--coral);
+
+  border-color: var(--coral);
+
+  color: white;
+
+  font-weight: 700;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: var(--coral-dark);
+  border-color: var(--coral-dark);
+}
+
+/* 작은 화면에서는 날짜/장소를 세로 배치 */
+
+@media (max-width: 650px) {
+  .memory-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+.home-memory-form {
+  margin-top: 18px;
+  padding: 24px;
+}
+
+.home-memory-form textarea {
+  min-height: 160px;
 }

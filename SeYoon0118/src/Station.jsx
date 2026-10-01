@@ -1,10 +1,16 @@
-import { Link } from 'react-router';
-
-export default function Station({ id, name, memoryCount }) {
+export default function Station({ name, memoryCount, onSelect, isSelected }) {
   return (
-    <Link to={`/station/${id}`}>
-      <h3>{name}</h3>
-      {memoryCount > 0 && <p>추억 {memoryCount}개</p>}
-    </Link>
+    <button
+      className={`station-item ${isSelected ? 'selected' : ''}`}
+      onClick={onSelect}
+    >
+      <span className="station-dot"></span>
+
+      <span className="station-name">{name}</span>
+
+      <span className="station-count">
+        {memoryCount > 0 ? `추억 ${memoryCount}` : '기록 없음'}
+      </span>
+    </button>
   );
 }
