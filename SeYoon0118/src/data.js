@@ -2,32 +2,26 @@ export const stations = [
   {
     id: 1,
     name: '충무로',
-    memoryCount: 1,
   },
   {
     id: 2,
     name: '동대문역사문화공원',
-    memoryCount: 1,
   },
   {
     id: 3,
     name: '동대문',
-    memoryCount: 0,
   },
   {
     id: 4,
     name: '혜화',
-    memoryCount: 1,
   },
   {
     id: 5,
     name: '한성대입구',
-    memoryCount: 0,
   },
   {
     id: 6,
     name: '성신여대입구',
-    memoryCount: 2,
   },
 ];
 export const memories = [
