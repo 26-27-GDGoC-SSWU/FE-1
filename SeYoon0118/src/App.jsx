@@ -1,12 +1,18 @@
 import { Routes, Route } from 'react-router';
 import HomePage from './HomePage.jsx';
 import StationPage from './StationPage.jsx';
+import { useState } from 'react';
+import { memories as initialMemories } from './data.js';
 
 export default function App() {
+  const [memories, setMemories] = useState(initialMemories);
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/station/:stationId" element={<StationPage />} />
+      <Route path="/" element={<HomePage memories={memories} />} />
+      <Route
+        path="/station/:stationId"
+        element={<StationPage memories={memories} setMemories={setMemories} />}
+      />
     </Routes>
   );
 }

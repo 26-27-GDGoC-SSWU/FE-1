@@ -1,11 +1,13 @@
-import MemoryCard from './MemoryCard.jsx';
+//import MemoryCard from './MemoryCard.jsx';
 import Station from './Station.jsx';
-import { stations, memories as initialMemories } from './data.js'; //initialMemories:앱이 처음 시작할 때 사용할 추억 데이터
-import { useState } from 'react';
+import { stations } from './data.js';
+//import { useState } from 'react';
 
-export default function HomePage() {
+export default function HomePage({ memories }) {
+  {
+    /* 
   const [selectedStationId, setSelectedStationId] = useState(stations[0].id); //[현재 선택된 역 ID,그 값을 바꾸는 함수]
-  const [memories, setMemories] = useState(initialMemories);
+  
   const selectedMemories = memories.filter(
     (memory) => memory.stationId === selectedStationId,
   );
@@ -45,32 +47,34 @@ export default function HomePage() {
   function handleDelete(id) {
     setMemories(memories.filter((memory) => memory.id !== id));
   }
+  */
+  }
 
   return (
     <main>
       <h1>나만의 추억 노선도</h1>
       <h2>학교 가는 길</h2>
-      <p>선택된 역 ID: {selectedStationId}</p>
-      <div className="route-layout">
-        {/*전체 노선*/}
-        <div className="route-list">
-          {stations.map((station) => {
-            const memoryCount = memories.filter(
-              (memory) => memory.stationId === station.id,
-            ).length;
+      {/*<p>선택된 역 ID: {selectedStationId}</p>
+      <div className="route-layout"> */}
+      {/*전체 노선*/}
+      <div className="route-list">
+        {stations.map((station) => {
+          const memoryCount = memories.filter(
+            (memory) => memory.stationId === station.id,
+          ).length;
 
-            return (
-              <Station
-                key={station.id}
-                id={station.id}
-                name={station.name}
-                memoryCount={memoryCount}
-              />
-            );
-          })}
-        </div>
+          return (
+            <Station
+              key={station.id}
+              id={station.id}
+              name={station.name}
+              memoryCount={memoryCount}
+            />
+          );
+        })}
+      </div>
 
-        {/*선택된 역의 추억 */}
+      {/*선택된 역의 추억 
         <div className="memory-panel">
           <h2>[{selectedStation.name}에서의 추억]</h2>
 
@@ -132,6 +136,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
+      */}
     </main>
   );
 }
