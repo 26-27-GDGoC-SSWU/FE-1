@@ -1,7 +1,16 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    proxy: {
+      '/kopis': {
+        target: 'http://www.kopis.or.kr/openApi/restful',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/kopis/, ''),
+      },
+    },
+  },
+});
