@@ -875,3 +875,14 @@ textarea {
 .home-memory-form textarea {
   min-height: 160px;
 }
+/* =========================
+   Route Search Page
+========================= */
+
+.route-search-error {
+  margin: 4px 0 12px;
+
+  color: var(--coral-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
