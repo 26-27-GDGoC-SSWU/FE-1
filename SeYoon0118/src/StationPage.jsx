@@ -1,7 +1,7 @@
-import { useParams } from 'react-router';
 import { stations } from './data.js';
 import MemoryCard from './MemoryCard.jsx';
 import { useState } from 'react';
+import { Link, useParams } from 'react-router';
 
 export default function StationPage({ memories, setMemories }) {
   const { stationId } = useParams();
@@ -54,78 +54,123 @@ export default function StationPage({ memories, setMemories }) {
   const currentMemory = selectedMemories[currentIndex];
 
   return (
-    <div>
-      <h1>{selectedStation.name}에서의 추억</h1>
+    <main className="station-page">
+      <div className="station-page-header">
+        <Link className="back-to-route" to="/">
+          ← 노선도로
+        </Link>
 
-      {currentMemory ? (
-        <MemoryCard
-          //key={memory.id}
-          id={currentMemory.id}
-          title={currentMemory.title}
-          place={currentMemory.place}
-          date={currentMemory.date}
-          diary={currentMemory.diary}
-          onDelete={handleDelete}
-        />
-      ) : (
-        <p>아직 기록이 없어요</p>
-      )}
-      <button
-        onClick={() => setCurrentIndex(currentIndex - 1)}
-        disabled={currentIndex === 0}
-      >
-        ← 이전
-      </button>
-      <p>
-        {currentIndex + 1} / {selectedMemories.length}
-      </p>
-      <button
-        onClick={() => setCurrentIndex(currentIndex + 1)}
-        disabled={currentIndex === selectedMemories.length - 1}
-      >
-        다음 →
-      </button>
-      <button onClick={() => setIsFormOpen(true)}>
-        +{selectedStation.name}에 기록 추가하기
-      </button>
-      {isFormOpen && (
-        <div>
-          <h3>새로운 추억 기록하기</h3>
+        <p className="section-label">역의 기록</p>
 
-          <input
-            type="text"
-            name="title"
-            value={newMemory.title}
-            onChange={handleChange}
-            placeholder="제목"
-          />
+        <div className="station-title-row">
+          <h1>{selectedStation.name}에서의 추억</h1>
 
-          <input
-            type="text"
-            name="place"
-            value={newMemory.place}
-            onChange={handleChange}
-            placeholder="장소"
-          />
-
-          <input
-            type="text"
-            name="date"
-            value={newMemory.date}
-            onChange={handleChange}
-            placeholder="날짜"
-          />
-
-          <textarea
-            name="diary"
-            value={newMemory.diary}
-            onChange={handleChange}
-            placeholder="오늘의 추억을 기록해보세요"
-          />
-          <button onClick={handleSave}>저장</button>
-          <button onClick={() => setIsFormOpen(false)}>취소</button>
+          <p>기록 {selectedMemories.length}개</p>
         </div>
-      )}
+      </div>
+
+      <div className="station-memory-area">
+        {currentMemory ? (
+          <MemoryCard
+            id={currentMemory.id}
+            title={currentMemory.title}
+            place={currentMemory.place}
+            date={currentMemory.date}
+            diary={currentMemory.diary}
+            onDelete={handleDelete}
+          />
+        ) : (
+          <div className="empty-memory">
+            <p>아직 기록이 없어요.</p>
+          </div>
+        )}
+      </div>
+
+      <div className="station-memory-navigation">
+        <button
+          onClick={() => setCurrentIndex(currentIndex - 1)}
+          disabled={currentIndex === 0}
+        >
+          ← 이전
+        </button>
+
+        <p>
+          <strong>{currentIndex + 1}</strong>
+          {' / '}
+          {selectedMemories.length}
+        </p>
+
+        <button
+          onClick={() => setCurrentIndex(currentIndex + 1)}
+          disabled={currentIndex === selectedMemories.length - 1}
+        >
+          다음 →
+        </button>
+      </div>
+
+      <button
+        className="station-add-button"
+        onClick={() => setIsFormOpen(true)}
+      >
+        + {selectedStation.name}에 기록 추가하기
+      </button>
+{isFormOpen && (
+  <div className="memory-form">
+    <h3>
+      {selectedStation.name}에 새 기록
+    </h3>
+
+    <input
+      type="text"
+      name="title"
+      value={newMemory.title}
+      onChange={handleChange}
+      placeholder="제목"
+    />
+
+    <div className="memory-form-row">
+      <input
+        type="text"
+        name="date"
+        value={newMemory.date}
+        onChange={handleChange}
+        placeholder="날짜"
+      />
+
+      <input
+        type="text"
+        name="place"
+        value={newMemory.place}
+        onChange={handleChange}
+        placeholder="장소"
+      />
     </div>
+
+    <textarea
+      name="diary"
+      value={newMemory.diary}
+      onChange={handleChange}
+      placeholder="오늘 이 역에서 있었던 일을 적어보세요"
+    />
+
+    <div className="memory-form-actions">
+      <button
+        className="cancel-button"
+        onClick={() => setIsFormOpen(false)}
+      >
+        취소
+      </button>
+
+      <button
+        className="save-button"
+        onClick={handleSave}
+      >
+        저장
+      </button>
+    </div>
+  </div>
+)}
+      
+    </main>
   );
 }
