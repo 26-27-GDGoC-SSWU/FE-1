@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import BookCard from "../components/BookCard";
 
+
 const initialBooks = [
   {
     id: 1,
@@ -29,10 +30,25 @@ function Books() {
 
   const [showForm, setShowForm] = useState(false);
 
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+
   function handleAddBook() {
+    if (!selectedBook) {
+      alert("검색 결과에서 책을 선택해주세요.");
+      return;
+    }
+
     const newBook = {
       id: Date.now(),
-      title: title,
+
+      title: selectedBook.title,
+      author: selectedBook.author_name?.[0] || "",
+      coverId: selectedBook.cover_i,
+      publishYear: selectedBook.first_publish_year,
+      workKey: selectedBook.key,
+
       rating: Number(rating),
       review: review,
       color: color,
@@ -45,7 +61,29 @@ function Books() {
     setReview("");
     setColor("#6b5b95");
 
+      setSelectedBook(null);
+      setSearchResults([]);
+
     setShowForm(false);
+  }
+
+  async function handleSearchBook() {
+    if (!title.trim()) return;
+
+    setSearching(true);
+
+    const response = await fetch(
+      `https://openlibrary.org/search.json?title=${encodeURIComponent(
+        title
+      )}&fields=key,title,author_name,cover_i,first_publish_year&limit=5`
+    );
+
+    const data = await response.json();
+
+    console.log(data.docs);
+
+    setSearchResults(data.docs);
+    setSearching(false);
   }
 
   return (
@@ -71,6 +109,58 @@ function Books() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+
+            <button
+              type="button"
+              onClick={handleSearchBook}
+            >
+              책 검색
+            </button>
+
+            {searching && <p>검색 중...</p>}
+
+              <div className="book-search-results">
+                {searchResults.map((result) => (
+                  <div
+                    key={result.key}
+                    className="book-search-item"
+                  >
+                    {result.cover_i && (
+                      <img
+                        src={`https://covers.openlibrary.org/b/id/${result.cover_i}-S.jpg`}
+                        alt={result.title}
+                      />
+                    )}
+
+                    <div>
+                      <strong>{result.title}</strong>
+
+                      <p>
+                        {result.author_name?.[0] || "저자 정보 없음"}
+                      </p>
+
+                      <p>
+                        {result.first_publish_year || "출간연도 정보 없음"}
+                      </p>
+                    </div>
+                        <button
+                        type="button"
+                        onClick={() => setSelectedBook(result)}
+                      >
+                        선택
+                      </button>
+                  </div>
+                ))}
+              </div>
+
+              {selectedBook && (
+                <div className="selected-book">
+                  선택한 책:
+                  <strong>
+                    {selectedBook.title} - {selectedBook.author_name?.[0]}
+                  </strong>
+                </div>
+              )}
 
             <div className="rating-stars">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -117,11 +207,7 @@ function Books() {
         {books.map((book) => (
           <BookCard
             key={book.id}
-            id={book.id}
-            title={book.title}
-            rating={book.rating}
-            review={book.review}
-            color={book.color}
+            book={book}
           />
         ))}
       </div>

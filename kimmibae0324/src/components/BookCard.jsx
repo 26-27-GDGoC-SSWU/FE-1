@@ -1,26 +1,18 @@
 import { Link } from "react-router";
 
-function BookCard({ id, title, rating, review, color }) {
-  const book = {
-    id,
-    title,
-    rating,
-    review,
-    color,
-  };
-
+function BookCard({ book }) {
   return (
     <Link
-      to={`/books/${id}`}
+      to={`/books/${book.id}`}
       state={{ book }}
       className="book-card-link"
     >
       <div
         className="book-cover"
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: book.color }}
       >
         <span className="book-label">MY BOOK</span>
-        <h2>{title}</h2>
+        <h2>{book.title}</h2>
       </div>
     </Link>
   );
