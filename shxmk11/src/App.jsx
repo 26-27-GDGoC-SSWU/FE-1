@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
@@ -10,44 +11,7 @@ import {
 import "./App.css";
 import PerformanceItem from "./components/PerformanceItem";
 
-const initialPerformances = [
-  {
-    id: 1,
-    title: "헤르츠클란",
-    type: "연극",
-    date: "2026.04.11",
-    place: "링크아트센터드림 드림3관",
-    casting: "",
-    seat: "",
-    price: "",
-    rating: 0,
-    review: "",
-  },
-  {
-    id: 2,
-    title: "오 맡겨주세요!",
-    type: "콘서트",
-    date: "2026.05.07",
-    place: "링크아트센터드림 드림1관",
-    casting: "",
-    seat: "",
-    price: "",
-    rating: 0,
-    review: "",
-  },
-  {
-    id: 3,
-    title: "디어 에반 핸슨",
-    type: "뮤지컬",
-    date: "2026.08.19",
-    place: "충무아트센터 대극장",
-    casting: "",
-    seat: "",
-    price: "",
-    rating: 0,
-    review: "",
-  },
-];
+const STORAGE_KEY = "stageArchivePerformances";
 
 function Home({ performances }) {
   return (
@@ -87,7 +51,9 @@ function Home({ performances }) {
               ))}
             </div>
           ) : (
-            <p className="empty-massage">아직 기록한 공연이 없어요.</p>
+            <p className="empty-massage">
+              아직 기록한 공연이 없어요.
+            </p>
           )}
         </section>
       </main>
@@ -114,74 +80,72 @@ function Archiving({ performances, setPerformances }) {
   const [searchMessage, setSearchMessage] = useState("");
 
   async function handleSearch() {
-  if (!title.trim()) {
-    setSearchMessage("공연명을 입력해주세요.");
-    return;
+    if (!title.trim()) {
+      setSearchMessage("공연명을 입력해주세요.");
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchResults([]);
+    setSearchMessage("");
+
+    try {
+      const apiKey = import.meta.env.VITE_KOPIS_KEY;
+
+      if (!apiKey) {
+        throw new Error(
+          ".env 파일의 VITE_KOPIS_KEY를 읽어오지 못했습니다. 개발 서버를 재시작해 보세요."
+        );
+      }
+
+      const formatDate = (date) => {
+        return (
+          date.getFullYear().toString() +
+          String(date.getMonth() + 1).padStart(2, "0") +
+          String(date.getDate()).padStart(2, "0")
+        );
+      };
+
+      const today = new Date();
+      const startDate = new Date();
+      startDate.setFullYear(today.getFullYear() - 3);
+
+      const url = `/kopis/pblprfr?service=${apiKey}&stdate=${formatDate(
+        startDate
+      )}&eddate=${formatDate(today)}&cpage=1&rows=100&shprfnm=${encodeURIComponent(
+        title.trim()
+      )}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`API 요청 실패: ${response.status}`);
+      }
+
+      const text = await response.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, "text/xml");
+      const items = Array.from(xml.querySelectorAll("db"));
+
+      const results = items.map((item) => ({
+        id: item.querySelector("mt20id")?.textContent || "",
+        title: item.querySelector("prfnm")?.textContent || "",
+        type: item.querySelector("genrenm")?.textContent || "",
+        place: item.querySelector("fcltynm")?.textContent || "",
+        poster: item.querySelector("poster")?.textContent || "",
+      }));
+
+      if (results.length === 0) {
+        setSearchMessage("검색 결과가 없어요.");
+      } else {
+        setSearchResults(results);
+      }
+    } catch (error) {
+      setSearchMessage(`검색 오류: ${error.message}`);
+    } finally {
+      setIsSearching(false);
+    }
   }
-
-  setIsSearching(true);
-  setSearchResults([]);
-  setSearchMessage("");
-
-  try {
-    const apiKey = import.meta.env.VITE_KOPIS_KEY;
-    
-    // 1. API 키 존재 여부 검증
-    if (!apiKey) {
-      throw new Error(".env 파일의 VITE_KOPIS_KEY를 읽어오지 못했습니다. 개발 서버를 재시작해 보세요.");
-    }
-
-    const formatDate = (date) => {
-      return (
-        date.getFullYear().toString() +
-        String(date.getMonth() + 1).padStart(2, "0") +
-        String(date.getDate()).padStart(2, "0")
-      );
-    };
-
-    const today = new Date();
-    // 2. 최근 3년 동안의 공연 검색 (필요에 따라 연도 조절 가능)
-    const startDate = new Date();
-    startDate.setFullYear(today.getFullYear() - 3);
-
-    const url = `/kopis/pblprfr?service=${apiKey}&stdate=${formatDate(
-      startDate
-    )}&eddate=${formatDate(today)}&cpage=1&rows=100&shprfnm=${encodeURIComponent(
-      title.trim()
-    )}`;
-
-    // 3. 브라우저 콘솔(F12)에서 실제 전송되는 URL 확인용
-    console.log("요청 URL:", url);
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-
-    const text = await response.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "text/xml");
-    const items = Array.from(xml.querySelectorAll("db"));
-
-    const results = items.map((item) => ({
-      id: item.querySelector("mt20id")?.textContent || "",
-      title: item.querySelector("prfnm")?.textContent || "",
-      type: item.querySelector("genrenm")?.textContent || "",
-      place: item.querySelector("fcltynm")?.textContent || "",
-      poster: item.querySelector("poster")?.textContent || "",
-    }));
-
-    if (results.length === 0) {
-      setSearchMessage("검색 결과가 없어요.");
-    } else {
-      setSearchResults(results);
-    }
-  } catch (error) {
-    setSearchMessage(`검색 오류: ${error.message}`);
-  } finally {
-    setIsSearching(false);
-  }
-}
 
   function handleSelectPerformance(performance) {
     setSelectedPerformance(performance);
@@ -193,21 +157,30 @@ function Archiving({ performances, setPerformances }) {
   }
 
   function handleSubmit() {
+    if (!title.trim()) {
+      setSearchMessage("공연명을 입력해주세요.");
+      return;
+    }
+
     const newPerformance = {
-      id: performances.length + 1,
-      title: title,
-      type: type,
-      date: date,
-      place: place,
+      id: Date.now(),
+      title: title.trim(),
+      type,
+      date,
+      place,
       poster: selectedPerformance?.poster || "",
-      casting: casting,
-      seat: seat,
-      price: price,
+      casting,
+      seat,
+      price,
       rating: Number(rating),
-      review: review,
+      review,
     };
 
-    setPerformances([...performances, newPerformance]);
+    setPerformances((previousPerformances) => [
+      ...previousPerformances,
+      newPerformance,
+    ]);
+
     navigate("/");
   }
 
@@ -222,7 +195,10 @@ function Archiving({ performances, setPerformances }) {
           placeholder="공연명을 입력하세요"
         />
 
-        <button onClick={handleSearch}>
+        <button
+          onClick={handleSearch}
+          disabled={isSearching}
+        >
           {isSearching ? "검색 중..." : "공연 정보 불러오기"}
         </button>
       </div>
@@ -336,13 +312,44 @@ function PerformanceDetail({ performances }) {
 
   return (
     <div className="detail-page">
-      <Link to="/">← 돌아가기</Link>
+      <div className="detail-actions">
+        <Link to="/">← 돌아가기</Link>
+        <button
+          type="button"
+          className="detail-delete-button"
+          onClick={() => {
+            const confirmed = window.confirm("이 공연 기록을 삭제하시겠어요?");
+
+            if (confirmed) {
+              const savedPerformances = JSON.parse(
+                localStorage.getItem(STORAGE_KEY) || "[]"
+              );
+
+              const updatedPerformances = savedPerformances.filter(
+                (item) => item.id !== performance.id
+              );
+
+              localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(updatedPerformances)
+              );
+
+              window.location.href = "/";
+            }
+          }}
+        >
+          삭제
+        </button>
+      </div>
 
       <div className="detail-card">
         <div className="detail-top">
           <div className="detail-poster">
             {performance.poster && (
-              <img src={performance.poster} alt={performance.title} />
+              <img
+                src={performance.poster}
+                alt={performance.title}
+              />
             )}
           </div>
 
@@ -389,14 +396,43 @@ function PerformanceDetail({ performances }) {
 }
 
 function App() {
-  const [performances, setPerformances] = useState(initialPerformances);
+  const [performances, setPerformances] = useState(() => {
+    try {
+      const savedPerformances = localStorage.getItem(STORAGE_KEY);
+      return savedPerformances ? JSON.parse(savedPerformances) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(performances)
+    );
+  }, [performances]);
+
+  function handleDelete(id) {
+    const confirmed = window.confirm("이 공연 기록을 삭제하시겠어요?");
+
+    if (!confirmed) return;
+
+    setPerformances((previousPerformances) =>
+      previousPerformances.filter((performance) => performance.id !== id)
+    );
+  }
 
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<Home performances={performances} />}
+          element={
+            <Home
+              performances={performances}
+              onDelete={handleDelete}
+            />
+          }
         />
 
         <Route

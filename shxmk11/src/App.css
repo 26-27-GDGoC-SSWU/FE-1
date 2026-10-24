@@ -421,10 +421,14 @@ select {
     radial-gradient(circle at 46px 6px, #28c840 0 5px, transparent 5.5px);
 }
 
-.detail-page > a {
+.detail-actions > a {
   display: inline-block;
   margin: 10px 0 18px;
+  padding: 4px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   color: #6e6e73;
+  background: #ffffff;
   font-size: 13px;
   text-decoration: none;
 }
@@ -744,4 +748,57 @@ select {
     grid-template-columns: 1fr;
     gap: 1px;
   }
+}
+
+
+.performance-item-container {
+  position: relative;
+  min-width: 0;
+}
+
+.performance-item-container .performance-item {
+  height: 100%;
+}
+
+.performance-item-delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 6px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #555555;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.performance-item-delete:hover {
+  background: #f5f5f5;
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.detail-delete-button {
+  margin-top: -12px;
+  padding: 8px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #555555;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.detail-delete-button:hover {
+  background: #f5f5f5;
 }
