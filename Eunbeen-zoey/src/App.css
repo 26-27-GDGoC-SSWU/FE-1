@@ -220,3 +220,24 @@ body {
   background: #eee !important;
   color: #333 !important;
 }
+
+/* 공휴일 패널 */
+.holiday-panel { margin-top: 16px; padding: 16px; border-radius: 12px; background: #f7f7fb; }
+.holiday-list { list-style: none; padding: 0; margin: 8px 0 0; }
+.holiday-list li { display: flex; gap: 12px; padding: 6px 0; }
+.holiday-date { font-weight: 600; color: #e74c3c; min-width: 48px; }
+.state-loading { color: #888; }
+.state-error { color: #c0392b; }
+.state-error button { margin-top: 6px; }
+.state-empty { color: #999; font-style: italic; }
+
+/* 달력 칸 안의 공휴일 */
+.day-cell.holiday .day-number { color: #e74c3c; font-weight: 700; }
+.holiday-name {
+  display: block;
+  font-size: 10px;
+  color: #e74c3c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

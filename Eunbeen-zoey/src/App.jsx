@@ -3,9 +3,13 @@ import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
+import NotFound from './pages/Notfound';
 import { COLOR_PALETTE } from './utils/ebbinghaus';
 import './App.css';
 
+//1."/" : 달력을 조회하는 Home 페이지
+//2. "/settings": 복습 주기, 학습 항목을 추가하는 설정 페이지
+//3. 그 외 모든 경로: NotFound 페이지
 function App() {
   const [cycleDays, setCycleDays] = useState([1, 3, 7, 14, 30]);
   const [studyItems, setStudyItems] = useState([]);
@@ -66,6 +70,7 @@ function App() {
             />
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

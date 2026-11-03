@@ -1,14 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import DayCell from './DayCell';
 import { getMonthMatrix, calculateReviewDates, formatDate } from '../utils/ebbinghaus';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 // [기능 2] 달력 형태로 한 눈에 계획을 알아보기 쉽게 표현
-function Calendar({ studyItems, cycleDays, memos, onDayClick }) {
+// ✅ viewYear, viewMonth, holidayMap을 부모(HomePage)에게 props로 받음
+function Calendar({ studyItems, cycleDays, memos, onDayClick, viewYear, viewMonth, onChangeMonth, holidayMap }) {
   const today = new Date();
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const monthMatrix = useMemo(
     () => getMonthMatrix(viewYear, viewMonth),
@@ -28,22 +27,15 @@ function Calendar({ studyItems, cycleDays, memos, onDayClick }) {
     return map;
   }, [studyItems, cycleDays]);
 
+  // ✅ 직접 상태를 바꾸지 않고, 부모에게 "이 달로 바꿔줘"라고 알림
   const handlePrevMonth = () => {
-    if (viewMonth === 0) {
-      setViewMonth(11);
-      setViewYear((y) => y - 1);
-    } else {
-      setViewMonth((m) => m - 1);
-    }
+    if (viewMonth === 0) onChangeMonth(viewYear - 1, 11);
+    else onChangeMonth(viewYear, viewMonth - 1);
   };
 
   const handleNextMonth = () => {
-    if (viewMonth === 11) {
-      setViewMonth(0);
-      setViewYear((y) => y + 1);
-    } else {
-      setViewMonth((m) => m + 1);
-    }
+    if (viewMonth === 11) onChangeMonth(viewYear + 1, 0);
+    else onChangeMonth(viewYear, viewMonth + 1);
   };
 
   const todayStr = formatDate(today);
@@ -74,6 +66,10 @@ function Calendar({ studyItems, cycleDays, memos, onDayClick }) {
                 hasMemo={dateStr ? Boolean(memos[dateStr]) : false}
                 isToday={dateStr === todayStr}
                 onClick={onDayClick}
+                // ✅ 외부 API: 이번 달 날짜면 공휴일 이름 전달 (없으면 undefined)
+                holidayName={
+                  date && date.getMonth() === viewMonth ? holidayMap[date.getDate()] : undefined
+                }
               />
             );
           })}
