@@ -84,7 +84,7 @@ export default function HomePage({ memories, setMemories }) {
                   onSelect={() => {
                     setSelectedStationId(station.id);
                     setCurrentIndex(0);
-                    setIsFormOpen(False);
+                    setIsFormOpen(false);
                   }}
                 />
               );
