@@ -574,3 +574,18 @@
 .book-description p {
   text-align: left;
 }
+
+.status-message {
+  margin: 15px 0;
+  color: #666;
+}
+
+.error-message {
+  margin: 15px 0;
+  color: #b00020;
+}
+
+.empty-message {
+  margin: 15px 0;
+  color: #777;
+}

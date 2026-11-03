@@ -34,6 +34,9 @@ function Books() {
   const [searching, setSearching] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
+  const [searchError, setSearchError] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+
   function handleAddBook() {
     if (!selectedBook) {
       alert("검색 결과에서 책을 선택해주세요.");
@@ -71,19 +74,30 @@ function Books() {
     if (!title.trim()) return;
 
     setSearching(true);
+    setSearchError("");
+    setSearchResults([]);
+    setHasSearched(true);
 
-    const response = await fetch(
-      `https://openlibrary.org/search.json?title=${encodeURIComponent(
-        title
-      )}&fields=key,title,author_name,cover_i,first_publish_year&limit=5`
-    );
+    try {
+      const response = await fetch(
+        `https://openlibrary.org/search.json?title=${encodeURIComponent(
+          title
+        )}&fields=key,title,author_name,cover_i,first_publish_year&limit=5`
+      );
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error("API 요청 실패");
+      }
 
-    console.log(data.docs);
+      const data = await response.json();
 
-    setSearchResults(data.docs);
-    setSearching(false);
+      setSearchResults(data.docs);
+    } catch (error) {
+      console.error(error);
+      setSearchError("책 정보를 불러오지 못했습니다.");
+    } finally {
+      setSearching(false);
+    }
   }
 
   return (
@@ -117,8 +131,31 @@ function Books() {
               책 검색
             </button>
 
-            {searching && <p>검색 중...</p>}
+            {/* Loading */}
+            {searching && (
+              <p className="status-message">
+                책을 검색하고 있습니다...
+              </p>
+            )}
 
+            {/* Error */}
+            {searchError && (
+              <p className="error-message">
+                {searchError}
+              </p>
+            )}
+
+            {/* Empty */}
+            {hasSearched &&
+              !searching &&
+              !searchError &&
+              searchResults.length === 0 && (
+                <p className="empty-message">
+                  검색 결과가 없습니다.
+                </p>
+              )}
+
+            {!searching && !searchError && (
               <div className="book-search-results">
                 {searchResults.map((result) => (
                   <div
@@ -143,15 +180,17 @@ function Books() {
                         {result.first_publish_year || "출간연도 정보 없음"}
                       </p>
                     </div>
-                        <button
-                        type="button"
-                        onClick={() => setSelectedBook(result)}
-                      >
-                        선택
-                      </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedBook(result)}
+                    >
+                      선택
+                    </button>
                   </div>
                 ))}
               </div>
+            )}
 
               {selectedBook && (
                 <div className="selected-book">
