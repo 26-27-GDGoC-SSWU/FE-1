@@ -10,8 +10,66 @@ import {
 } from "react-router";
 import "./App.css";
 import PerformanceItem from "./components/PerformanceItem";
+import {
+  usePerformanceContext,
+} from "./context/PerformanceContext";
+import usePerformanceFilter from "./hooks/usePerformanceFilter";
 
 const STORAGE_KEY = "stageArchivePerformances";
+
+function PerformanceFilter() {
+  const { selectedType, setSelectedType } = usePerformanceContext();
+
+  const types = ["전체", "뮤지컬", "연극", "콘서트"];
+
+  return (
+    <div className="filter">
+      {types.map((type) => (
+        <button
+          key={type}
+          className={selectedType === type ? "active" : ""}
+          onClick={() => setSelectedType(type)}
+        >
+          {type}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function PerformanceList({ performances }) {
+  const { selectedType } = usePerformanceContext();
+  const filteredPerformances = usePerformanceFilter(
+    performances,
+    selectedType
+  );
+
+  if (filteredPerformances.length === 0) {
+    return (
+      <p className="empty-massage">
+        {performances.length === 0
+          ? "아직 기록한 공연이 없어요."
+          : "해당 종류의 공연 기록이 없어요."}
+      </p>
+    );
+  }
+
+  return (
+    <div className="performance-grid">
+      {filteredPerformances.map((performance) => (
+        <PerformanceItem
+          key={performance.id}
+          id={performance.id}
+          title={performance.title}
+          type={performance.type}
+          date={performance.date}
+          place={performance.place}
+          poster={performance.poster}
+        />
+      ))}
+    </div>
+  );
+}
 
 function Home({ performances }) {
   return (
@@ -22,46 +80,23 @@ function Home({ performances }) {
       </header>
 
       <main className="container">
-        <Link to="/archiving" className="add-button">
-          + 기록 추가
-        </Link>
-
         <section className="performance-section">
-          <h2>최근 관람한 공연</h2>
+          <div className="performance-toolbar">
+            <PerformanceFilter />
 
-          <div className="filter">
-            <button>전체</button>
-            <button>뮤지컬</button>
-            <button>연극</button>
-            <button>콘서트</button>
+            <Link to="/archiving" className="add-button">
+              + 기록 추가
+            </Link>
           </div>
 
-          {performances.length > 0 ? (
-            <div className="performance-grid">
-              {performances.map((performance) => (
-                <PerformanceItem
-                  key={performance.id}
-                  id={performance.id}
-                  title={performance.title}
-                  type={performance.type}
-                  date={performance.date}
-                  place={performance.place}
-                  poster={performance.poster}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="empty-massage">
-              아직 기록한 공연이 없어요.
-            </p>
-          )}
+          <PerformanceList performances={performances} />
         </section>
       </main>
     </div>
   );
 }
 
-function Archiving({ performances, setPerformances }) {
+function Archiving({ setPerformances }) {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -77,25 +112,28 @@ function Archiving({ performances, setPerformances }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPerformance, setSelectedPerformance] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchMessage, setSearchMessage] = useState("");
+  const [searchError, setSearchError] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
 
   async function handleSearch() {
     if (!title.trim()) {
-      setSearchMessage("공연명을 입력해주세요.");
+      setSearchError("공연명을 입력해주세요.");
+      setSearchResults([]);
+      setHasSearched(false);
       return;
     }
 
     setIsSearching(true);
     setSearchResults([]);
-    setSearchMessage("");
+    setSearchError("");
+    setHasSearched(false);
+    setSelectedPerformance(null);
 
     try {
       const apiKey = import.meta.env.VITE_KOPIS_KEY;
 
       if (!apiKey) {
-        throw new Error(
-          ".env 파일의 VITE_KOPIS_KEY를 읽어오지 못했습니다. 개발 서버를 재시작해 보세요."
-        );
+        throw new Error("공연 API 키를 확인해주세요.");
       }
 
       const formatDate = (date) => {
@@ -119,12 +157,17 @@ function Archiving({ performances, setPerformances }) {
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error(`API 요청 실패: ${response.status}`);
+        throw new Error(`API 요청에 실패했습니다. (${response.status})`);
       }
 
       const text = await response.text();
       const parser = new DOMParser();
       const xml = parser.parseFromString(text, "text/xml");
+
+      if (xml.querySelector("parsererror")) {
+        throw new Error("공연 정보를 읽는 중 오류가 발생했습니다.");
+      }
+
       const items = Array.from(xml.querySelectorAll("db"));
 
       const results = items.map((item) => ({
@@ -135,13 +178,12 @@ function Archiving({ performances, setPerformances }) {
         poster: item.querySelector("poster")?.textContent || "",
       }));
 
-      if (results.length === 0) {
-        setSearchMessage("검색 결과가 없어요.");
-      } else {
-        setSearchResults(results);
-      }
+      setSearchResults(results);
+      setHasSearched(true);
     } catch (error) {
-      setSearchMessage(`검색 오류: ${error.message}`);
+      setSearchError(
+        error.message || "공연 정보를 불러오지 못했습니다."
+      );
     } finally {
       setIsSearching(false);
     }
@@ -151,14 +193,24 @@ function Archiving({ performances, setPerformances }) {
     setSelectedPerformance(performance);
     setSearchResults([]);
     setTitle(performance.title);
-    setType(performance.type);
+    setType(
+      performance.type.includes("뮤지컬")
+        ? "뮤지컬"
+        : performance.type.includes("연극")
+        ? "연극"
+        : performance.type.includes("대중음악") ||
+          performance.type.includes("콘서트")
+        ? "콘서트"
+        : ""
+    );
     setPlace(performance.place);
-    setSearchMessage("");
+    setSearchError("");
+    setHasSearched(false);
   }
 
   function handleSubmit() {
     if (!title.trim()) {
-      setSearchMessage("공연명을 입력해주세요.");
+      setSearchError("공연명을 입력해주세요.");
       return;
     }
 
@@ -203,8 +255,22 @@ function Archiving({ performances, setPerformances }) {
         </button>
       </div>
 
-      {searchMessage && (
-        <p className="search-message">{searchMessage}</p>
+      {isSearching && (
+        <p className="search-message" role="status">
+          공연 정보를 불러오는 중...
+        </p>
+      )}
+
+      {searchError && (
+        <p className="search-message" role="alert">
+          {searchError}
+        </p>
+      )}
+
+      {hasSearched && !isSearching && !searchError && searchResults.length === 0 && (
+        <p className="search-message">
+          검색 결과가 없습니다.
+        </p>
       )}
 
       {searchResults.length > 0 && (
@@ -241,7 +307,15 @@ function Archiving({ performances, setPerformances }) {
 
           <div>
             <span>공연 종류</span>
-            <p>{type}</p>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value="">공연 종류를 선택하세요</option>
+              <option value="뮤지컬">뮤지컬</option>
+              <option value="연극">연극</option>
+              <option value="콘서트">콘서트</option>
+            </select>
           </div>
 
           <div>
@@ -412,34 +486,18 @@ function App() {
     );
   }, [performances]);
 
-  function handleDelete(id) {
-    const confirmed = window.confirm("이 공연 기록을 삭제하시겠어요?");
-
-    if (!confirmed) return;
-
-    setPerformances((previousPerformances) =>
-      previousPerformances.filter((performance) => performance.id !== id)
-    );
-  }
-
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={
-            <Home
-              performances={performances}
-              onDelete={handleDelete}
-            />
-          }
+          element={<Home performances={performances} />}
         />
 
         <Route
           path="/archiving"
           element={
             <Archiving
-              performances={performances}
               setPerformances={setPerformances}
             />
           }
