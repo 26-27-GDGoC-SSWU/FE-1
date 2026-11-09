@@ -94,9 +94,3 @@ const filteredPerformances = usePerformanceFilter(
 ```
 
 ➡️ API에서 가져온 기본 분류를 사용자가 변경하고, 최종 선택한 종류를 공연 기록에 저장
-
----
-
-## → 실습 결과
-
-화면 기록 2026-11-09 오후 9.50.23.mov
