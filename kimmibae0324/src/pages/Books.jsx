@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router";
+import { BookContext } from "../context/BookContext";
 import BookCard from "../components/BookCard";
 
 
@@ -21,7 +22,8 @@ const initialBooks = [
 ];
 
 function Books() {
-  const [books, setBooks] = useState(initialBooks);
+
+  const { books, setBooks } = useContext(BookContext);
 
   const [title, setTitle] = useState("");
   const [rating, setRating] = useState("");
