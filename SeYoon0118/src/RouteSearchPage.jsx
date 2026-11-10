@@ -2,10 +2,23 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { searchPlace, searchTransitRoutes } from './kakaoApi.js';
 export default function RouteSearchPage() {
+  //출발지 입력값
   const [startLocation, setStartLocation] = useState('');
+  //도착지 입력 값
   const [endLocation, setEndLocation] = useState('');
+  //API에서 받아온 경로 후보
+  const [routeOptions, setRouteOptions] = useState();
+
+  //API호출 중 발생한 에러메세지
   const [errorMessage, setErrorMessage] = useState('');
+  //현재 API 요청 중인지
   const [isLoading, setIsLoading] = useState(false);
+  //사용자가 한 번이라도 경로찾기를 눌렀는지
+  const [hasSearched, setHasSearched] = useState(false);
+  // Empty 상태는 별도 state로 만들지 않고 계산
+  const isEmpty =
+    hasSearched && !isLoading && !errorMessage && routeOptions.length === 0;
+
   function handleStartChange(e) {
     setStartLocation(e.target.value);
   }
@@ -29,6 +42,8 @@ export default function RouteSearchPage() {
     }
 
     setErrorMessage('');
+    setRouteOptions([]);
+    setHasSearched(true);
     setIsLoading(true);
     try {
       // 1) 출발지/도착지 문자열 → 좌표
@@ -37,7 +52,7 @@ export default function RouteSearchPage() {
 
       console.log('출발지 검색 결과:', startPlace);
       console.log('도착지 검색 결과:', endPlace);
-
+      //장소검색 실패
       if (!startPlace) {
         setErrorMessage(`'${start}'에 해당하는 장소를 찾지 못했어요.`);
         return;
@@ -51,11 +66,12 @@ export default function RouteSearchPage() {
       // 2) 좌표 → 대중교통 경로
       const routeData = await searchTransitRoutes(startPlace, endPlace);
       console.log('대중교통 API 전체 응답:', routeData);
+      setRouteOptions(routeData.routes);
     } catch (error) {
       console.error(error);
       setErrorMessage('경로를 불러오지 못했어요. 콘솔을 확인해주세요.');
     } finally {
-      // 성공하든 실패하든, 중간에 return해도 마지막에 항상 실행돼요.
+      // 성공하든 실패하든, 중간에 return해도 마지막에 항상 실행
       setIsLoading(false);
     }
   }
@@ -98,7 +114,13 @@ export default function RouteSearchPage() {
           {endLocation || '(비어 있음)'}
         </p>
         {/* 추가: 에러 메시지가 있을 때만 보여주기 */}
+        {isLoading && <p>경로를 찾고 있어요...</p>}
+
         {errorMessage && <p className="route-search-error">{errorMessage}</p>}
+
+        {isEmpty && (
+          <p className="route-search-empty">해당하는 경로가 없어요.</p>
+        )}
 
         {/* 추가: 기존 저장 버튼 스타일 재사용 */}
         <div className="memory-form-actions">

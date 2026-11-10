@@ -4,6 +4,7 @@ import { stations } from './data.js';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
+
 export default function HomePage({ memories, setMemories }) {
   const [selectedStationId, setSelectedStationId] = useState(stations[0].id);
   const selectedStation = stations.find(
